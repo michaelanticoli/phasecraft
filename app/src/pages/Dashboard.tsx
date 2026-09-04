@@ -1,24 +1,20 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Badge, Button, LivePill, PhaseStrip } from '../components/ds';
 import { AppNav } from '../components/layout/AppNav';
-import { modules } from '../data/curriculum';
+import { AUTHORED_LESSON_KEY, lessonKey, modulesDetailed, totalLessonCount } from '../data/curriculum';
+import { module2Workbook } from '../data/workbook';
+import { useLessonProgress } from '../lib/useLessonProgress';
+import { useWorkbookProgress } from '../lib/useWorkbook';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../lib/AuthProvider';
 
-type LessonStatus = 'done' | 'current' | 'locked';
+const module2 = modulesDetailed[1];
 
-const currentModuleLessons: { label: string; status: LessonStatus; meta: string }[] = [
-  { label: '2.1 New Moon — The Quantum Zero-Point', status: 'done', meta: '45m' },
-  { label: '2.2 Waxing Crescent — Building Momentum', status: 'done', meta: '35m' },
-  { label: '2.3 First Quarter — Taking Decisive Action', status: 'current', meta: 'In progress' },
-  { label: '2.4 Waxing Gibbous — Refining and Perfecting', status: 'locked', meta: '40m' },
-  { label: '2.5 Full Moon — Culmination and Expression', status: 'locked', meta: '30m' },
-];
-
-function LessonRow({ label, status, meta }: { label: string; status: LessonStatus; meta: string }) {
-  const navigate = useNavigate();
-  const current = status === 'current';
+function LessonRow({ label, done, current, onClick }: { label: string; done: boolean; current: boolean; onClick: () => void }) {
   return (
     <div
-      onClick={current ? () => navigate('/lesson') : undefined}
+      onClick={onClick}
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -27,29 +23,59 @@ function LessonRow({ label, status, meta }: { label: string; status: LessonStatu
         background: current ? 'hsl(168 75% 45% / 0.06)' : 'hsl(0 0% 9%)',
         border: current ? '1px solid hsl(168 75% 45% / 0.15)' : 'none',
         borderRadius: 8,
-        cursor: current ? 'pointer' : 'default',
-        opacity: status === 'locked' ? 0.45 : 1,
+        cursor: 'pointer',
       }}
     >
-      {status === 'done' && (
+      {done ? (
         <div style={{ width: 18, height: 18, borderRadius: '50%', background: 'var(--mt-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none' }}>
           <span style={{ fontSize: 10, color: 'var(--mt-night)' }}>✓</span>
         </div>
-      )}
-      {status === 'current' && (
+      ) : current ? (
         <div style={{ width: 18, height: 18, borderRadius: '50%', border: '2px solid var(--mt-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none' }}>
           <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--mt-teal)' }} />
         </div>
+      ) : (
+        <div style={{ width: 18, height: 18, borderRadius: '50%', border: '1px solid hsl(0 0% 20%)', flex: 'none' }} />
       )}
-      {status === 'locked' && <div style={{ width: 18, height: 18, borderRadius: '50%', border: '1px solid hsl(0 0% 20%)', flex: 'none' }} />}
       <span style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: current ? 'var(--mt-ivory)' : 'var(--mt-clay)' }}>{label}</span>
-      <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 10, color: current ? 'var(--mt-teal)' : 'var(--mt-muted-fg)' }}>{meta}</span>
+      {current && <span style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--mt-teal)' }}>Open lesson</span>}
     </div>
   );
 }
 
+interface RecentPost {
+  id: string;
+  title: string;
+  author: string;
+  created_at: string;
+}
+
 export function Dashboard() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const lessons = useLessonProgress();
+  const workbook = useWorkbookProgress();
+  const [recentPosts, setRecentPosts] = useState<RecentPost[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from('community_posts')
+      .select('id, title, created_at, profiles(display_name)')
+      .order('created_at', { ascending: false })
+      .limit(2)
+      .then(({ data }) => {
+        setRecentPosts(
+          (data ?? []).map((p) => ({
+            id: p.id,
+            title: p.title,
+            created_at: p.created_at,
+            author: p.profiles?.display_name ?? 'Someone',
+          }))
+        );
+      });
+  }, []);
+
+  const coursePercent = Math.round((lessons.completedCount / totalLessonCount) * 100);
 
   return (
     <div className="theme-core" style={{ background: 'var(--mt-night)', color: 'var(--mt-ivory)', minHeight: '100vh' }}>
@@ -61,10 +87,10 @@ export function Dashboard() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
               <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'var(--mt-muted-fg)' }}>
-                Fri · Aug 15 · 2026
+                {new Date().toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
               </div>
               <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 200, fontSize: 28, letterSpacing: '-0.02em', margin: '8px 0 0' }}>
-                Welcome back, <span style={{ fontFamily: 'var(--font-editorial)', fontStyle: 'italic', color: 'var(--mt-gold)' }}>Michael</span>
+                Welcome back, <span style={{ fontFamily: 'var(--font-editorial)', fontStyle: 'italic', color: 'var(--mt-gold)' }}>{user?.email?.split('@')[0]}</span>
               </h1>
             </div>
             <LivePill>Waxing Gibbous in Sagittarius</LivePill>
@@ -74,18 +100,22 @@ export function Dashboard() {
           <div style={{ padding: 24, background: 'hsl(0 0% 7%)', border: '1px solid hsl(0 0% 13%)', borderRadius: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16 }}>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--mt-muted-fg)' }}>Course Progress</span>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--mt-teal)' }}>38%</span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--mt-teal)' }}>{coursePercent}%</span>
             </div>
             <div style={{ height: 4, background: 'hsl(0 0% 12%)', borderRadius: 2, marginBottom: 20 }}>
-              <div style={{ height: '100%', width: '38%', background: 'var(--mt-teal)', borderRadius: 2 }} />
+              <div style={{ height: '100%', width: `${coursePercent}%`, background: 'var(--mt-teal)', borderRadius: 2, transition: 'width 0.3s ease' }} />
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
-              {modules.map((m) => (
-                <div key={m.num} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                  <div style={{ width: '100%', height: 3, background: m.color, borderRadius: 2, opacity: 0.35 }} />
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.1em', color: 'var(--mt-muted-fg)' }}>{m.num}</span>
-                </div>
-              ))}
+              {modulesDetailed.map((m) => {
+                const keys = m.lessons.map(lessonKey);
+                const frac = keys.filter(lessons.isDone).length / keys.length;
+                return (
+                  <div key={m.num} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                    <div style={{ width: '100%', height: 3, background: m.color, borderRadius: 2, opacity: 0.35 + frac * 0.65 }} />
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: '0.1em', color: 'var(--mt-muted-fg)' }}>{m.num}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -96,14 +126,26 @@ export function Dashboard() {
                 <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--mt-muted-fg)', marginBottom: 6 }}>
                   Currently Studying
                 </div>
-                <div style={{ fontFamily: 'var(--font-serif)', fontSize: 20 }}>Module 2: The Waxing Journey</div>
+                <div style={{ fontFamily: 'var(--font-serif)', fontSize: 20 }}>
+                  Module {module2.num}: {module2.title}
+                </div>
               </div>
-              <Badge>Week 2</Badge>
+              <Badge>{module2.sub}</Badge>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {currentModuleLessons.map((l) => (
-                <LessonRow key={l.label} {...l} />
-              ))}
+              {module2.lessons.map((label) => {
+                const key = lessonKey(label);
+                const isAuthored = key === AUTHORED_LESSON_KEY;
+                return (
+                  <LessonRow
+                    key={key}
+                    label={label}
+                    done={lessons.isDone(key)}
+                    current={isAuthored}
+                    onClick={() => (isAuthored ? navigate('/lesson') : lessons.toggle(key))}
+                  />
+                );
+              })}
             </div>
             <div style={{ marginTop: 16 }}>
               <Button size="sm" onClick={() => navigate('/lesson')}>
@@ -147,34 +189,48 @@ export function Dashboard() {
           <div onClick={() => navigate('/workbook')} style={{ padding: 20, background: 'hsl(0 0% 7%)', border: '1px solid hsl(0 0% 13%)', borderRadius: 16, cursor: 'pointer' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 14 }}>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--mt-muted-fg)' }}>Workbook</span>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--mt-gold)' }}>4 / 14 complete</span>
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--mt-gold)' }}>
+                {workbook.completedCount} / {module2Workbook.length} complete
+              </span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: 'hsl(0 0% 9%)', borderRadius: 8 }}>
-                <div style={{ width: 14, height: 14, borderRadius: '50%', background: 'var(--mt-teal)', flex: 'none' }} />
-                <span style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'var(--mt-clay)' }}>Ex 2.3: Intention Ceremony</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: 'hsl(42 50% 58% / 0.06)', border: '1px solid hsl(42 50% 58% / 0.12)', borderRadius: 8 }}>
-                <div style={{ width: 14, height: 14, borderRadius: 3, border: '1.5px solid var(--mt-gold)', flex: 'none' }} />
-                <span style={{ fontFamily: 'var(--font-sans)', fontSize: 13 }}>Ex 2.5: Research Project</span>
-              </div>
+              {module2Workbook.slice(0, 2).map((ex) => {
+                const done = workbook.isDone(ex.key);
+                return (
+                  <div key={ex.key} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', background: 'hsl(0 0% 9%)', borderRadius: 8 }}>
+                    <div
+                      style={{
+                        width: 14,
+                        height: 14,
+                        borderRadius: done ? '50%' : 3,
+                        background: done ? 'var(--mt-teal)' : 'transparent',
+                        border: done ? 'none' : '1.5px solid var(--mt-gold)',
+                        flex: 'none',
+                      }}
+                    />
+                    <span style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: done ? 'var(--mt-clay)' : 'var(--mt-ivory)' }}>{ex.label}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
           <div onClick={() => navigate('/community')} style={{ padding: 20, background: 'hsl(0 0% 7%)', border: '1px solid hsl(0 0% 13%)', borderRadius: 16, cursor: 'pointer' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 14 }}>
               <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--mt-muted-fg)' }}>Community</span>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--mt-teal)' }}>3 new</span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <div style={{ padding: '10px 12px', background: 'hsl(0 0% 9%)', borderRadius: 8 }}>
-                <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, marginBottom: 3 }}>Full Moon Release Ceremony Share</div>
-                <div style={{ fontFamily: 'var(--font-sans)', fontSize: 11, color: 'var(--mt-muted-fg)' }}>Sarah K. · 2h ago · 12 replies</div>
-              </div>
-              <div style={{ padding: '10px 12px', background: 'hsl(0 0% 9%)', borderRadius: 8 }}>
-                <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, marginBottom: 3 }}>Scorpio moon energy this week</div>
-                <div style={{ fontFamily: 'var(--font-sans)', fontSize: 11, color: 'var(--mt-muted-fg)' }}>David R. · 5h ago · 8 replies</div>
-              </div>
+              {recentPosts.length === 0 && (
+                <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)' }}>No posts yet — be the first.</div>
+              )}
+              {recentPosts.map((p) => (
+                <div key={p.id} style={{ padding: '10px 12px', background: 'hsl(0 0% 9%)', borderRadius: 8 }}>
+                  <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, marginBottom: 3 }}>{p.title}</div>
+                  <div style={{ fontFamily: 'var(--font-sans)', fontSize: 11, color: 'var(--mt-muted-fg)' }}>
+                    {p.author} · {new Date(p.created_at).toLocaleDateString()}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

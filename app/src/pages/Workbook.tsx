@@ -1,19 +1,13 @@
+import { useNavigate } from 'react-router-dom';
 import { SidebarShell } from '../components/layout/SidebarShell';
-
-const partA = [
-  { label: '✓ Ex 2.1: Moon Phase Tracking', done: true },
-  { label: '✓ Ex 2.2: Phase Identification', done: true },
-];
-const partB = [
-  { label: '✓ Ex 2.3: Intention Ceremony', done: true },
-  { label: '✓ Ex 2.4: Shadow Exploration', done: true },
-];
+import { AUTHORED_EXERCISE_KEY, module2Workbook } from '../data/workbook';
+import { useWorkbookProgress, useWorkbookResponses } from '../lib/useWorkbook';
 
 const prompts = [
-  { label: 'Your chosen intention', placeholder: 'What intention from your New Moon ceremony are you developing?', minHeight: 80 },
-  { label: 'What do you need to learn?', placeholder: 'What information, skills, or knowledge do you need to gather?', minHeight: 100 },
-  { label: 'Resources and connections', placeholder: 'Who might help? What tools or resources do you need?', minHeight: 100 },
-  { label: 'Action plan for the First Quarter', placeholder: 'Based on your research, what specific actions will you take at the First Quarter?', minHeight: 100 },
+  { key: 'intention', label: 'Your chosen intention', placeholder: 'What intention from your New Moon ceremony are you developing?', minHeight: 80 },
+  { key: 'learn', label: 'What do you need to learn?', placeholder: 'What information, skills, or knowledge do you need to gather?', minHeight: 100 },
+  { key: 'resources', label: 'Resources and connections', placeholder: 'Who might help? What tools or resources do you need?', minHeight: 100 },
+  { key: 'plan', label: 'Action plan for the First Quarter', placeholder: 'Based on your research, what specific actions will you take at the First Quarter?', minHeight: 100 },
 ];
 
 const textareaStyle = {
@@ -27,7 +21,13 @@ const textareaStyle = {
   color: 'var(--riso-ink)',
 } as const;
 
+const parts = Array.from(new Set(module2Workbook.map((e) => e.part)));
+
 export function Workbook() {
+  const navigate = useNavigate();
+  const progress = useWorkbookProgress();
+  const { responses, setResponses, completed, save, saving, savedAt } = useWorkbookResponses(AUTHORED_EXERCISE_KEY);
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--mt-night)' }}>
       <SidebarShell>
@@ -36,45 +36,40 @@ export function Workbook() {
             Workbook
           </div>
           <div style={{ fontFamily: 'var(--font-serif)', fontSize: 16, color: 'var(--mt-ivory)' }}>Module 2 Exercises</div>
-          <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)', marginTop: 4 }}>4 of 14 complete</div>
+          <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)', marginTop: 4 }}>
+            {progress.completedCount} of {module2Workbook.length} complete
+          </div>
         </div>
         <div style={{ flex: 1, padding: 12, display: 'flex', flexDirection: 'column', gap: 2, overflowY: 'auto' }}>
-          <div style={{ padding: '10px 12px', borderRadius: 8, fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-clay)' }}>Part A: Phase Recognition</div>
-          {partA.map((e) => (
-            <div key={e.label} style={{ padding: '8px 12px 8px 24px', borderRadius: 6, fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)' }}>
-              {e.label}
+          {parts.map((part) => (
+            <div key={part}>
+              <div style={{ padding: '10px 12px', borderRadius: 8, fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-clay)' }}>{part}</div>
+              {module2Workbook
+                .filter((e) => e.part === part)
+                .map((ex) => {
+                  const isAuthored = ex.key === AUTHORED_EXERCISE_KEY;
+                  const done = isAuthored ? completed : progress.isDone(ex.key);
+                  return (
+                    <div
+                      key={ex.key}
+                      onClick={isAuthored ? undefined : () => progress.toggle(ex.key)}
+                      style={{
+                        padding: '8px 12px 8px 24px',
+                        borderRadius: 6,
+                        fontFamily: 'var(--font-sans)',
+                        fontSize: 12,
+                        cursor: isAuthored ? 'default' : 'pointer',
+                        color: isAuthored ? 'var(--mt-ivory)' : done ? 'var(--mt-muted-fg)' : 'var(--mt-clay)',
+                        background: isAuthored ? 'hsl(42 50% 58% / 0.08)' : 'transparent',
+                        border: isAuthored ? '1px solid hsl(42 50% 58% / 0.15)' : 'none',
+                      }}
+                    >
+                      {done ? '✓' : isAuthored ? '◐' : '○'} {ex.label}
+                    </div>
+                  );
+                })}
             </div>
           ))}
-          <div style={{ padding: '10px 12px', borderRadius: 8, fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-clay)' }}>Part B: New Moon</div>
-          {partB.map((e) => (
-            <div key={e.label} style={{ padding: '8px 12px 8px 24px', borderRadius: 6, fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)' }}>
-              {e.label}
-            </div>
-          ))}
-          <div style={{ padding: '10px 12px', borderRadius: 8, fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-clay)' }}>Part C: Waxing Crescent</div>
-          <div
-            style={{
-              padding: '8px 12px 8px 24px',
-              borderRadius: 6,
-              background: 'hsl(42 50% 58% / 0.08)',
-              border: '1px solid hsl(42 50% 58% / 0.15)',
-              fontFamily: 'var(--font-sans)',
-              fontSize: 12,
-              color: 'var(--mt-ivory)',
-            }}
-          >
-            ◐ Ex 2.5: Research Project
-          </div>
-          <div style={{ padding: '8px 12px 8px 24px', borderRadius: 6, fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)', opacity: 0.5 }}>
-            ○ Ex 2.6: Momentum Assessment
-          </div>
-          <div style={{ padding: '10px 12px', borderRadius: 8, fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-clay)', opacity: 0.5 }}>Part D: First Quarter</div>
-          <div style={{ padding: '8px 12px 8px 24px', borderRadius: 6, fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)', opacity: 0.5 }}>
-            ○ Ex 2.7: Action Taking
-          </div>
-          <div style={{ padding: '8px 12px 8px 24px', borderRadius: 6, fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)', opacity: 0.5 }}>
-            ○ Ex 2.8: Obstacle Analysis
-          </div>
         </div>
       </SidebarShell>
 
@@ -96,11 +91,16 @@ export function Workbook() {
           <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(28,26,23,0.35)' }}>
             Module 2 · Part C · Exercise 5
           </span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--riso-teal)' }}>Draft saved</span>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--riso-teal)' }}>
+            {saving ? 'Saving…' : savedAt ? 'Draft saved' : completed ? 'Completed' : ''}
+          </span>
         </div>
 
         <form
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={(e) => {
+            e.preventDefault();
+            save(responses);
+          }}
           style={{ maxWidth: 700, padding: '40px 48px 64px' }}
         >
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'var(--riso-teal)', marginBottom: 12 }}>
@@ -118,11 +118,16 @@ export function Workbook() {
           </div>
 
           {prompts.map((p) => (
-            <div key={p.label} style={{ marginBottom: 32 }}>
+            <div key={p.key} style={{ marginBottom: 32 }}>
               <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 500, fontSize: 12, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'rgba(28,26,23,0.5)', marginBottom: 10 }}>
                 {p.label}
               </div>
-              <textarea style={{ ...textareaStyle, minHeight: p.minHeight }} placeholder={p.placeholder} />
+              <textarea
+                style={{ ...textareaStyle, minHeight: p.minHeight }}
+                placeholder={p.placeholder}
+                value={responses[p.key] ?? ''}
+                onChange={(e) => setResponses({ ...responses, [p.key]: e.target.value })}
+              />
             </div>
           ))}
 
@@ -149,6 +154,7 @@ export function Workbook() {
             </button>
             <button
               type="button"
+              onClick={() => save(responses, true).then(() => navigate('/dashboard'))}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -160,12 +166,12 @@ export function Workbook() {
                 textTransform: 'uppercase',
                 borderRadius: 9999,
                 border: '1px solid rgba(28,26,23,0.2)',
-                background: 'transparent',
+                background: completed ? 'rgba(31,154,166,0.1)' : 'transparent',
                 color: 'var(--riso-ink)',
                 cursor: 'pointer',
               }}
             >
-              Mark Complete
+              {completed ? '✓ Completed' : 'Mark Complete'}
             </button>
           </div>
         </form>

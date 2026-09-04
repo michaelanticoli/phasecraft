@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, Input, MoonPhaseGlyph } from '../components/ds';
+import { Button, MoonPhaseGlyph } from '../components/ds';
 import { Logo } from '../components/layout/Logo';
+import { useAuth } from '../lib/AuthProvider';
+import { useEnrollment } from '../lib/useEnrollment';
+import { supabase } from '../lib/supabase';
 
 const summaryLines = [
   '6 Core Modules (33 lessons)',
@@ -13,104 +15,116 @@ const summaryLines = [
 ];
 
 export function Checkout() {
-  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const { status } = useEnrollment();
   const [plan, setPlan] = useState<'once' | 'installments'>('once');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleCheckout() {
+    setError(null);
+    setSubmitting(true);
+    const { data, error } = await supabase.functions.invoke<{ url: string }>('create-checkout-session', {
+      body: { plan },
+    });
+    setSubmitting(false);
+    if (error || !data?.url) {
+      setError('Something went wrong starting checkout. Please try again.');
+      return;
+    }
+    window.location.href = data.url;
+  }
 
   return (
     <div className="theme-core" style={{ background: 'var(--mt-night)', color: 'var(--mt-ivory)', minHeight: '100vh' }}>
       <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 48px', borderBottom: '1px solid hsl(0 0% 10%)' }}>
         <Logo />
-        <span
-          onClick={() => navigate('/')}
-          style={{ fontFamily: 'var(--font-ui)', fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--mt-muted-fg)', cursor: 'pointer' }}
-        >
-          ← Back to Course
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+          <span style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)' }}>{user?.email}</span>
+          <span
+            onClick={() => signOut()}
+            style={{ fontFamily: 'var(--font-ui)', fontSize: 11, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--mt-muted-fg)', cursor: 'pointer' }}
+          >
+            Log Out
+          </span>
+        </div>
       </nav>
 
       <div style={{ maxWidth: 960, margin: '0 auto', padding: 48, display: 'grid', gridTemplateColumns: '1fr 380px', gap: 48 }}>
-        {/* Left: form */}
+        {/* Left: plan selection */}
         <div>
           <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.24em', textTransform: 'uppercase', color: 'var(--mt-teal)', marginBottom: 12 }}>
             Enrollment
           </div>
-          <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 200, fontSize: 32, letterSpacing: '-0.02em', margin: '0 0 32px' }}>
+          <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 200, fontSize: 32, letterSpacing: '-0.02em', margin: '0 0 12px' }}>
             Complete Your <span style={{ fontFamily: 'var(--font-editorial)', fontStyle: 'italic', color: 'var(--mt-gold)' }}>Registration</span>
           </h1>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              navigate('/dashboard');
-            }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 20 }}
-          >
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-              <Input label="First Name" placeholder="Michael" required />
-              <Input label="Last Name" placeholder="Anticoli" required />
-            </div>
-            <Input label="Email Address" type="email" placeholder="michael@moontuner.xyz" required />
+          {status === 'pending' && (
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: 'var(--mt-clay)', margin: '0 0 32px' }}>
+              You'll pay securely on Stripe's page — we never see or store your card details.
+            </p>
+          )}
+          {status === 'canceled' && (
+            <p style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: 'hsl(42 60% 65%)', margin: '0 0 32px' }}>
+              Your last enrollment attempt didn't go through. Pick a plan below to try again.
+            </p>
+          )}
 
-            <div style={{ paddingTop: 12, borderTop: '1px solid hsl(0 0% 12%)' }}>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--mt-muted-fg)', marginBottom: 16 }}>
-                Payment
-              </div>
-              <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
-                <div
-                  onClick={() => setPlan('once')}
-                  style={{
-                    flex: 1,
-                    padding: '12px 16px',
-                    background: plan === 'once' ? 'hsl(168 75% 45% / 0.08)' : 'hsl(0 0% 8%)',
-                    border: `1px solid ${plan === 'once' ? 'var(--mt-teal)' : 'hsl(0 0% 15%)'}`,
-                    borderRadius: 10,
-                    cursor: 'pointer',
-                    textAlign: 'center',
-                  }}
-                >
-                  <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase', color: plan === 'once' ? 'var(--mt-ivory)' : 'var(--mt-muted-fg)' }}>
-                    One-Time
-                  </div>
-                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 200, fontSize: 24, marginTop: 4, color: plan === 'once' ? 'var(--mt-ivory)' : 'var(--mt-muted-fg)' }}>
-                    $197
-                  </div>
+          <div style={{ paddingTop: 12 }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--mt-muted-fg)', marginBottom: 16 }}>
+              Choose Your Plan
+            </div>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
+              <div
+                onClick={() => setPlan('once')}
+                style={{
+                  flex: 1,
+                  padding: '16px 20px',
+                  background: plan === 'once' ? 'hsl(168 75% 45% / 0.08)' : 'hsl(0 0% 8%)',
+                  border: `1px solid ${plan === 'once' ? 'var(--mt-teal)' : 'hsl(0 0% 15%)'}`,
+                  borderRadius: 10,
+                  cursor: 'pointer',
+                  textAlign: 'center',
+                }}
+              >
+                <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase', color: plan === 'once' ? 'var(--mt-ivory)' : 'var(--mt-muted-fg)' }}>
+                  One-Time
                 </div>
-                <div
-                  onClick={() => setPlan('installments')}
-                  style={{
-                    flex: 1,
-                    padding: '12px 16px',
-                    background: plan === 'installments' ? 'hsl(168 75% 45% / 0.08)' : 'hsl(0 0% 8%)',
-                    border: `1px solid ${plan === 'installments' ? 'var(--mt-teal)' : 'hsl(0 0% 15%)'}`,
-                    borderRadius: 10,
-                    cursor: 'pointer',
-                    textAlign: 'center',
-                  }}
-                >
-                  <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase', color: plan === 'installments' ? 'var(--mt-ivory)' : 'var(--mt-muted-fg)' }}>
-                    3 Payments
-                  </div>
-                  <div style={{ fontFamily: 'var(--font-display)', fontWeight: 200, fontSize: 24, marginTop: 4, color: plan === 'installments' ? 'var(--mt-ivory)' : 'var(--mt-muted-fg)' }}>
-                    $75/mo
-                  </div>
+                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 200, fontSize: 28, marginTop: 4, color: plan === 'once' ? 'var(--mt-ivory)' : 'var(--mt-muted-fg)' }}>
+                  $197
                 </div>
               </div>
-              <Input label="Card Number" placeholder="4242 4242 4242 4242" required />
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 16 }}>
-                <Input label="Expiry" placeholder="12 / 28" required />
-                <Input label="CVC" placeholder="123" required />
+              <div
+                onClick={() => setPlan('installments')}
+                style={{
+                  flex: 1,
+                  padding: '16px 20px',
+                  background: plan === 'installments' ? 'hsl(168 75% 45% / 0.08)' : 'hsl(0 0% 8%)',
+                  border: `1px solid ${plan === 'installments' ? 'var(--mt-teal)' : 'hsl(0 0% 15%)'}`,
+                  borderRadius: 10,
+                  cursor: 'pointer',
+                  textAlign: 'center',
+                }}
+              >
+                <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, fontWeight: 500, letterSpacing: '0.04em', textTransform: 'uppercase', color: plan === 'installments' ? 'var(--mt-ivory)' : 'var(--mt-muted-fg)' }}>
+                  3 Payments
+                </div>
+                <div style={{ fontFamily: 'var(--font-display)', fontWeight: 200, fontSize: 28, marginTop: 4, color: plan === 'installments' ? 'var(--mt-ivory)' : 'var(--mt-muted-fg)' }}>
+                  $75/mo
+                </div>
               </div>
             </div>
 
-            <div style={{ marginTop: 8 }}>
-              <Button type="submit" fullWidth size="lg">
-                Complete Enrollment
-              </Button>
+            {error && <p style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'hsl(0 84% 65%)', margin: '0 0 16px' }}>{error}</p>}
+
+            <Button fullWidth size="lg" disabled={submitting} onClick={handleCheckout}>
+              {submitting ? 'Redirecting to Stripe…' : 'Continue to Payment'}
+            </Button>
+            <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)', textAlign: 'center', marginTop: 14 }}>
+              Secure checkout via Stripe · 30-day money-back guarantee
             </div>
-            <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)', textAlign: 'center' }}>
-              Secure checkout · 30-day money-back guarantee
-            </div>
-          </form>
+          </div>
         </div>
 
         {/* Right: order summary */}

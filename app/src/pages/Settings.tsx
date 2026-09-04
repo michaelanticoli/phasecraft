@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Input } from '../components/ds';
 import { AppNav } from '../components/layout/AppNav';
+import { useAuth } from '../lib/AuthProvider';
+import { useEnrollmentDetail, useNotificationPreferences, useProfile, type NotificationPreferences } from '../lib/useProfile';
 
 function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
   return (
@@ -35,22 +37,27 @@ function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
   );
 }
 
-const initialPrefs = {
-  directive: true,
-  transition: true,
-  voc: false,
-  digest: true,
-};
-
-const prefRows: { key: keyof typeof initialPrefs; title: string; desc: string }[] = [
-  { key: 'directive', title: 'Daily directive notifications', desc: 'Receive your phase-aligned directive each morning' },
-  { key: 'transition', title: 'Phase transition alerts', desc: 'Get notified when the moon changes phase' },
-  { key: 'voc', title: 'Void-of-course reminders', desc: 'Heads up before VOC periods begin' },
-  { key: 'digest', title: 'Community digest', desc: 'Weekly summary of top discussions' },
+const prefRows: { key: keyof NotificationPreferences; title: string; desc: string }[] = [
+  { key: 'daily_directive', title: 'Daily directive notifications', desc: 'Receive your phase-aligned directive each morning' },
+  { key: 'phase_transition', title: 'Phase transition alerts', desc: 'Get notified when the moon changes phase' },
+  { key: 'voc_reminders', title: 'Void-of-course reminders', desc: 'Heads up before VOC periods begin' },
+  { key: 'community_digest', title: 'Community digest', desc: 'Weekly summary of top discussions' },
 ];
 
+const PLAN_LABEL = { once: 'One-Time ($197)', installments: '3 Payments ($75/mo)' };
+
 export function Settings() {
-  const [prefs, setPrefs] = useState(initialPrefs);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const profile = useProfile();
+  const { prefs, toggle } = useNotificationPreferences();
+  const { enrollment } = useEnrollmentDetail();
+  const initial = (profile.displayName || user?.email || '?')[0]?.toUpperCase();
+
+  async function handleSignOut() {
+    await signOut();
+    navigate('/');
+  }
 
   return (
     <div className="theme-core" style={{ background: 'var(--mt-night)', color: 'var(--mt-ivory)', minHeight: '100vh' }}>
@@ -82,19 +89,33 @@ export function Settings() {
                 justifyContent: 'center',
               }}
             >
-              <span style={{ fontFamily: 'var(--font-display)', fontWeight: 200, fontSize: 24, color: 'var(--mt-teal)' }}>M</span>
+              <span style={{ fontFamily: 'var(--font-display)', fontWeight: 200, fontSize: 24, color: 'var(--mt-teal)' }}>{initial}</span>
             </div>
             <div>
-              <div style={{ fontFamily: 'var(--font-serif)', fontSize: 18 }}>Michael Moon Anticoli</div>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'var(--mt-muted-fg)' }}>michael@moontuner.xyz</div>
+              <div style={{ fontFamily: 'var(--font-serif)', fontSize: 18 }}>{profile.displayName || 'Set your name below'}</div>
+              <div style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: 'var(--mt-muted-fg)' }}>{user?.email}</div>
             </div>
             <div style={{ marginLeft: 'auto' }}>
-              <Button variant="ghost" size="sm">Edit</Button>
+              <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                Log Out
+              </Button>
             </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-            <Input label="Display Name" placeholder="Michael" />
-            <Input label="Timezone" placeholder="EST (UTC-5)" />
+            <Input
+              label="Display Name"
+              placeholder="Michael"
+              value={profile.displayName}
+              onChange={(e) => profile.setDisplayName(e.target.value)}
+              onBlur={() => profile.save({ display_name: profile.displayName })}
+            />
+            <Input
+              label="Timezone"
+              placeholder="EST (UTC-5)"
+              value={profile.timezone}
+              onChange={(e) => profile.setTimezone(e.target.value)}
+              onBlur={() => profile.save({ timezone: profile.timezone })}
+            />
           </div>
         </div>
 
@@ -119,7 +140,7 @@ export function Settings() {
                   <div style={{ fontFamily: 'var(--font-sans)', fontSize: 14 }}>{row.title}</div>
                   <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)' }}>{row.desc}</div>
                 </div>
-                <Toggle on={prefs[row.key]} onToggle={() => setPrefs((p) => ({ ...p, [row.key]: !p[row.key] }))} />
+                <Toggle on={prefs[row.key]} onToggle={() => toggle(row.key)} />
               </div>
             ))}
           </div>
@@ -133,15 +154,19 @@ export function Settings() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 20 }}>
             <div>
               <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)', marginBottom: 4 }}>Plan</div>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: 14 }}>Lifetime Access</div>
+              <div style={{ fontFamily: 'var(--font-sans)', fontSize: 14 }}>{enrollment?.plan ? PLAN_LABEL[enrollment.plan] : '—'}</div>
             </div>
             <div>
               <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)', marginBottom: 4 }}>Enrolled</div>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: 14 }}>Jul 15, 2026</div>
+              <div style={{ fontFamily: 'var(--font-sans)', fontSize: 14 }}>
+                {enrollment?.enrolled_at ? new Date(enrollment.enrolled_at).toLocaleDateString() : '—'}
+              </div>
             </div>
             <div>
               <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)', marginBottom: 4 }}>Status</div>
-              <div style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: 'var(--mt-teal)' }}>Active</div>
+              <div style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: enrollment?.status === 'active' ? 'var(--mt-teal)' : 'var(--mt-muted-fg)' }}>
+                {enrollment ? enrollment.status[0].toUpperCase() + enrollment.status.slice(1) : '—'}
+              </div>
             </div>
           </div>
         </div>

@@ -31,8 +31,8 @@ export function MarketingNav() {
         <span style={linkStyle}>Curriculum</span>
         <span style={linkStyle}>Method</span>
         <Link to="/community" style={linkStyle}>Community</Link>
-        <Link to="/dashboard" style={{ ...linkStyle, color: 'var(--mt-ivory)' }}>Log In</Link>
-        <div onClick={() => navigate('/checkout')} style={{ cursor: 'pointer' }}>
+        <Link to="/login" style={{ ...linkStyle, color: 'var(--mt-ivory)' }}>Log In</Link>
+        <div onClick={() => navigate('/signup')} style={{ cursor: 'pointer' }}>
           <Button size="sm">Enroll Now</Button>
         </div>
       </div>

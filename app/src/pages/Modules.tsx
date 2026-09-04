@@ -1,8 +1,19 @@
+import { useNavigate } from 'react-router-dom';
 import { Badge, MoonPhaseGlyph } from '../components/ds';
 import { AppNav } from '../components/layout/AppNav';
-import { bonusModules, modulesDetailed } from '../data/curriculum';
+import { AUTHORED_LESSON_KEY, bonusModules, lessonKey, modulesDetailed } from '../data/curriculum';
+import { useLessonProgress } from '../lib/useLessonProgress';
+
+function moduleStatus(completedInModule: number, total: number): 'Complete' | 'In Progress' | 'Not Started' {
+  if (completedInModule === total) return 'Complete';
+  if (completedInModule > 0) return 'In Progress';
+  return 'Not Started';
+}
 
 export function Modules() {
+  const navigate = useNavigate();
+  const { isDone, toggle, loading } = useLessonProgress();
+
   return (
     <div className="theme-core" style={{ background: 'var(--mt-night)', color: 'var(--mt-ivory)', minHeight: '100vh' }}>
       <AppNav active="modules" />
@@ -14,33 +25,62 @@ export function Modules() {
         <h1 style={{ fontFamily: 'var(--font-display)', fontWeight: 200, fontSize: 32, letterSpacing: '-0.02em', margin: '0 0 8px' }}>
           Lunar Phasecraft <span style={{ fontFamily: 'var(--font-editorial)', fontStyle: 'italic', color: 'var(--mt-gold)' }}>Mastery</span>
         </h1>
-        <p style={{ fontFamily: 'var(--font-sans)', fontSize: 15, color: 'var(--mt-clay)', margin: '0 0 36px' }}>6 modules · 33 lessons · 8-week transformation</p>
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: 15, color: 'var(--mt-clay)', margin: '0 0 8px' }}>6 modules · 33 lessons · 8-week transformation</p>
+        <p style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)', margin: '0 0 36px' }}>
+          Click a lesson to mark it watched — {AUTHORED_LESSON_KEY} also opens the full lesson.
+        </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {modulesDetailed.map((md) => (
-            <div key={md.num} style={{ padding: 28, background: 'hsl(0 0% 7%)', border: '1px solid hsl(0 0% 13%)', borderLeft: `3px solid ${md.color}`, borderRadius: 16 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-                  <span style={{ color: md.color, display: 'inline-block', width: 32, height: 32 }}>
-                    <MoonPhaseGlyph phase={md.phase} size={32} />
-                  </span>
-                  <div>
-                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.2em', color: 'var(--mt-muted-fg)', marginBottom: 4 }}>{md.sub}</div>
-                    <div style={{ fontFamily: 'var(--font-serif)', fontSize: 20 }}>{md.title}</div>
+          {modulesDetailed.map((md) => {
+            const keys = md.lessons.map(lessonKey);
+            const completedInModule = keys.filter(isDone).length;
+            const status = moduleStatus(completedInModule, keys.length);
+            return (
+              <div key={md.num} style={{ padding: 28, background: 'hsl(0 0% 7%)', border: '1px solid hsl(0 0% 13%)', borderLeft: `3px solid ${md.color}`, borderRadius: 16 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <span style={{ color: md.color, display: 'inline-block', width: 32, height: 32 }}>
+                      <MoonPhaseGlyph phase={md.phase} size={32} />
+                    </span>
+                    <div>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.2em', color: 'var(--mt-muted-fg)', marginBottom: 4 }}>{md.sub}</div>
+                      <div style={{ fontFamily: 'var(--font-serif)', fontSize: 20 }}>{md.title}</div>
+                    </div>
                   </div>
+                  <Badge tone={status === 'Complete' ? 'teal' : 'neutral'}>{status}</Badge>
                 </div>
-                <Badge>{md.status}</Badge>
+                <p style={{ fontFamily: 'var(--font-sans)', fontSize: 14, lineHeight: 1.6, color: 'var(--mt-clay)', margin: '0 0 16px' }}>{md.desc}</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                  {md.lessons.map((ls) => {
+                    const key = lessonKey(ls);
+                    const done = isDone(key);
+                    return (
+                      <div
+                        key={ls}
+                        onClick={() => (key === AUTHORED_LESSON_KEY ? navigate('/lesson') : toggle(key))}
+                        style={{
+                          padding: '8px 14px',
+                          background: done ? 'hsl(168 75% 45% / 0.1)' : 'hsl(0 0% 9%)',
+                          border: done ? '1px solid hsl(168 75% 45% / 0.3)' : '1px solid transparent',
+                          borderRadius: 8,
+                          fontFamily: 'var(--font-sans)',
+                          fontSize: 13,
+                          color: done ? 'var(--mt-teal)' : 'var(--mt-muted-fg)',
+                          cursor: loading ? 'default' : 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 6,
+                        }}
+                      >
+                        {done && <span>✓</span>}
+                        {ls}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-              <p style={{ fontFamily: 'var(--font-sans)', fontSize: 14, lineHeight: 1.6, color: 'var(--mt-clay)', margin: '0 0 16px' }}>{md.desc}</p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {md.lessons.map((ls) => (
-                  <div key={ls} style={{ padding: '8px 14px', background: 'hsl(0 0% 9%)', borderRadius: 8, fontFamily: 'var(--font-sans)', fontSize: 13, color: 'var(--mt-muted-fg)' }}>
-                    {ls}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Bonus */}

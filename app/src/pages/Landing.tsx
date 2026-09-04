@@ -62,7 +62,7 @@ export function Landing() {
           Transform your life by aligning with the Moon's sacred rhythms. Six modules. Eight weeks. A lifetime of lunar wisdom.
         </p>
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', marginTop: 36 }}>
-          <div onClick={() => navigate('/checkout')} style={{ cursor: 'pointer' }}>
+          <div onClick={() => navigate('/signup')} style={{ cursor: 'pointer' }}>
             <Button>Begin Your Journey — $197</Button>
           </div>
           <div onClick={() => navigate('/modules')} style={{ cursor: 'pointer' }}>
@@ -182,7 +182,7 @@ export function Landing() {
           <div style={{ fontFamily: 'var(--font-sans)', fontSize: 14, color: 'var(--mt-clay)', marginBottom: 28 }}>
             One-time payment · Lifetime access · All future updates
           </div>
-          <div onClick={() => navigate('/checkout')} style={{ cursor: 'pointer' }}>
+          <div onClick={() => navigate('/signup')} style={{ cursor: 'pointer' }}>
             <Button fullWidth>Enroll Now</Button>
           </div>
           <div style={{ fontFamily: 'var(--font-sans)', fontSize: 12, color: 'var(--mt-muted-fg)', marginTop: 14 }}>

@@ -1,19 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { Badge, MoonPhaseGlyph } from '../components/ds';
 import { SidebarShell } from '../components/layout/SidebarShell';
+import { AUTHORED_LESSON_KEY, lessonKey, modulesDetailed } from '../data/curriculum';
+import { useLessonProgress } from '../lib/useLessonProgress';
 
-type SidebarLessonStatus = 'done' | 'current' | 'locked';
-
-const sidebarLessons: { label: string; status: SidebarLessonStatus }[] = [
-  { label: '2.1 New Moon', status: 'done' },
-  { label: '2.2 Waxing Crescent', status: 'done' },
-  { label: '2.3 First Quarter', status: 'current' },
-  { label: '2.4 Waxing Gibbous', status: 'locked' },
-  { label: '2.5 Full Moon', status: 'locked' },
-];
+const module2 = modulesDetailed[1];
 
 export function Lesson() {
   const navigate = useNavigate();
+  const { isDone, toggle } = useLessonProgress();
+  const thisLessonDone = isDone(AUTHORED_LESSON_KEY);
+  const moduleFraction = module2.lessons.filter((l) => isDone(lessonKey(l))).length / module2.lessons.length;
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--mt-night)' }}>
@@ -30,11 +27,14 @@ export function Lesson() {
           <div style={{ fontFamily: 'var(--font-serif)', fontSize: 16, color: 'var(--mt-ivory)' }}>The Waxing Journey</div>
         </div>
         <div style={{ flex: 1, padding: 12, display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {sidebarLessons.map((l) => {
-            const current = l.status === 'current';
+          {module2.lessons.map((label) => {
+            const key = lessonKey(label);
+            const current = key === AUTHORED_LESSON_KEY;
+            const done = isDone(key);
             return (
               <div
-                key={l.label}
+                key={key}
+                onClick={current ? undefined : () => toggle(key)}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -43,21 +43,21 @@ export function Lesson() {
                   background: current ? 'hsl(168 75% 45% / 0.08)' : 'transparent',
                   border: current ? '1px solid hsl(168 75% 45% / 0.15)' : 'none',
                   borderRadius: 8,
-                  opacity: l.status === 'locked' ? 0.4 : 1,
+                  cursor: current ? 'default' : 'pointer',
                 }}
               >
-                {l.status === 'done' && (
+                {done ? (
                   <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'var(--mt-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none' }}>
                     <span style={{ fontSize: 9, color: 'var(--mt-night)' }}>✓</span>
                   </div>
-                )}
-                {l.status === 'current' && (
+                ) : current ? (
                   <div style={{ width: 16, height: 16, borderRadius: '50%', border: '2px solid var(--mt-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none' }}>
                     <div style={{ width: 5, height: 5, borderRadius: '50%', background: 'var(--mt-teal)' }} />
                   </div>
+                ) : (
+                  <div style={{ width: 16, height: 16, borderRadius: '50%', border: '1px solid hsl(0 0% 20%)', flex: 'none' }} />
                 )}
-                {l.status === 'locked' && <div style={{ width: 16, height: 16, borderRadius: '50%', border: '1px solid hsl(0 0% 20%)', flex: 'none' }} />}
-                <span style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: current ? 'var(--mt-ivory)' : 'var(--mt-clay)' }}>{l.label}</span>
+                <span style={{ fontFamily: 'var(--font-sans)', fontSize: 13, color: current ? 'var(--mt-ivory)' : 'var(--mt-clay)' }}>{label}</span>
               </div>
             );
           })}
@@ -67,7 +67,7 @@ export function Lesson() {
             Module Progress
           </div>
           <div style={{ height: 3, background: 'hsl(0 0% 12%)', borderRadius: 2 }}>
-            <div style={{ height: '100%', width: '55%', background: 'var(--mt-teal)', borderRadius: 2 }} />
+            <div style={{ height: '100%', width: `${Math.round(moduleFraction * 100)}%`, background: 'var(--mt-teal)', borderRadius: 2, transition: 'width 0.3s ease' }} />
           </div>
         </div>
       </SidebarShell>
@@ -202,11 +202,35 @@ export function Lesson() {
             </div>
           </div>
 
+          <div style={{ display: 'flex', justifyContent: 'center', margin: '40px 0 0' }}>
+            <div
+              onClick={() => toggle(AUTHORED_LESSON_KEY)}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '0.7rem 1.6rem',
+                fontFamily: 'var(--font-ui)',
+                fontWeight: 500,
+                fontSize: '0.8rem',
+                letterSpacing: '0.06em',
+                textTransform: 'uppercase',
+                borderRadius: 9999,
+                cursor: 'pointer',
+                background: thisLessonDone ? 'hsl(168 75% 45% / 0.1)' : 'var(--riso-teal)',
+                color: thisLessonDone ? 'var(--riso-teal)' : '#fff',
+                border: thisLessonDone ? '1px solid var(--riso-teal)' : '1px solid transparent',
+              }}
+            >
+              {thisLessonDone ? '✓ Lesson Complete' : 'Mark Lesson Complete'}
+            </div>
+          </div>
+
           <div
             onClick={() => navigate('/workbook')}
             style={{
               padding: 28,
-              margin: '40px 0',
+              margin: '24px 0 40px',
               border: '1px solid rgba(28,26,23,0.1)',
               borderLeft: '3px solid var(--riso-teal)',
               borderRadius: '0 12px 12px 0',
