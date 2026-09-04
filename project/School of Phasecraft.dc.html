@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+  <meta name="design_doc_mode" content="canvas">
+  <link rel="stylesheet" href="_ds/moontuner-design-system-3223019c-06bc-4e55-8661-6b90b5337947/tokens/fonts.css">
+  <link rel="stylesheet" href="_ds/moontuner-design-system-3223019c-06bc-4e55-8661-6b90b5337947/tokens/colors.css">
+  <link rel="stylesheet" href="_ds/moontuner-design-system-3223019c-06bc-4e55-8661-6b90b5337947/tokens/typography.css">
+  <link rel="stylesheet" href="_ds/moontuner-design-system-3223019c-06bc-4e55-8661-6b90b5337947/tokens/spacing.css">
+  <link rel="stylesheet" href="_ds/moontuner-design-system-3223019c-06bc-4e55-8661-6b90b5337947/styles.css">
+  <script src="_ds/moontuner-design-system-3223019c-06bc-4e55-8661-6b90b5337947/_ds_bundle.js"></script>
+  <style>
+    html,body{margin:0}
+    body{background:#f0eee9;font-family:system-ui,sans-serif}
+    .dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(0,0,0,.08);scroll-margin-top:16px}
+    .dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+    .dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}
+    .dv-tname{font:600 13px/1.2 system-ui,sans-serif;color:#1a1a1a}
+    .dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+    .dv-opt{flex:none;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+    .dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}
+    .dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 system-ui,sans-serif;color:rgba(0,0,0,.55)}
+    .dv-card{max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);overflow:hidden}
+    .dv-opt:target .dv-oid{background:#2a78d6;color:#fff}
+    .dv-next{margin:22px 0 0;font:12px/1.5 system-ui,sans-serif;color:rgba(0,0,0,.5)}
+    @keyframes mt-orb{0%,100%{transform:translate(0,0) scale(1);opacity:.5}50%{transform:translate(14px,-10px) scale(1.08);opacity:.75}}
+    a{color:hsl(168 75% 45%)}a:hover{color:hsl(42 50% 58%)}
+  </style>
+</helmet>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">School of Phasecraft — Platform Directions</span></div>
+<div class="dv-opts">
+
+<!-- ═══════════════ 1a: OBSERVATORY LANDING ═══════════════ -->
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Observatory — dark cinematic landing page</div>
+<div class="dv-card" style="width:1200px">
+<div class="theme-core" style="background:var(--mt-night); color:var(--mt-ivory); position:relative; overflow:hidden;">
+
+  <!-- Ambient orbs -->
+  <div style="position:absolute; top:-80px; right:-60px; width:400px; height:400px; border-radius:50%; background:radial-gradient(circle, hsl(168 75% 45% / 0.1) 0%, transparent 70%); filter:blur(50px); pointer-events:none; animation:mt-orb 20s ease-in-out infinite;"></div>
+  <div style="position:absolute; bottom:600px; left:-100px; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle, hsl(42 50% 58% / 0.06) 0%, transparent 70%); filter:blur(40px); pointer-events:none;"></div>
+
+  <!-- Nav -->
+  <nav style="position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:20px 48px; border-bottom:1px solid hsl(0 0% 10%);">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="color:var(--mt-teal); display:inline-block; width:20px; height:20px;"><x-import component-from-global-scope="MoontunerDesignSystem_322301.MoonPhaseGlyph" phase="waxing-crescent" size="{{ sz20 }}" hint-size="20px,20px"></x-import></span>
+      <span style="font-family:var(--font-ui); font-weight:600; font-size:12px; letter-spacing:0.16em; text-transform:uppercase;">School of Phasecraft</span>
+    </div>
+    <div style="display:flex; gap:28px; align-items:center;">
+      <span style="font-family:var(--font-ui); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--mt-muted-fg); cursor:pointer;">Curriculum</span>
+      <span style="font-family:var(--font-ui); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--mt-muted-fg); cursor:pointer;">Method</span>
+      <span style="font-family:var(--font-ui); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:var(--mt-muted-fg); cursor:pointer;">Community</span>
+      <x-import component-from-global-scope="MoontunerDesignSystem_322301.Button" size="sm" hint-size="auto,36px">Enroll Now</x-import>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div style="position:relative; z-index:1; text-align:center; padding:80px 48px 48px;">
+    <div style="color:var(--mt-teal); display:inline-block; width:80px; height:80px; margin-bottom:32px;"><x-import component-from-global-scope="MoontunerDesignSystem_322301.MoonPhaseGlyph" phase="full" size="{{ sz80 }}" hint-size="80px,80px"></x-import></div>
+    <div style="font-family:var(--font-mono); font-size:11px; letter-spacing:0.24em; text-transform:uppercase; color:var(--mt-teal); margin-bottom:20px;">The Complete Moontuner Method</div>
+    <h1 style="font-family:var(--font-display); font-weight:200; font-size:60px; letter-spacing:-0.03em; margin:0; line-height:1.08;">Lunar Phasecraft<br><span style="font-family:var(--font-editorial); font-style:italic; color:var(--mt-gold);">Mastery</span></h1>
+    <p style="font-family:var(--font-sans); font-size:17px; line-height:1.65; color:var(--mt-clay); max-width:520px; margin:24px auto 0;">Transform your life by aligning with the Moon's sacred rhythms. Six modules. Eight weeks. A lifetime of lunar wisdom.</p>
+    <div style="display:flex; gap:14px; justify-content:center; margin-top:36px;">
+      <x-import component-from-global-scope="MoontunerDesignSystem_322301.Button" hint-size="auto,44px">Begin Your Journey — $197</x-import>
+      <x-import component-from-global-scope="MoontunerDesignSystem_322301.Button" variant="outline" hint-size="auto,44px">View Curriculum</x-import>
+    </div>
+  </div>
+
+  <!-- Phase strip -->
+  <div style="position:relative; z-index:1; padding:0 80px 60px;"><x-import component-from-global-scope="MoontunerDesignSystem_322301.PhaseStrip" hint-size="100%,56px"></x-import></div>
+
+  <!-- Problem / Solution -->
+  <div style="position:relative; z-index:1; padding:60px 80px; border-top:1px solid hsl(0 0% 10%);">
+    <div style="display:flex; gap:64px; max-width:1040px; margin:0 auto;">
+      <div style="flex:1;">
+        <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--mt-teal); margin-bottom:16px;">The Problem</div>
+        <p style="font-family:var(--font-sans); font-size:15px; line-height:1.7; color:var(--mt-clay); margin:0;">Modern life demands constant output, but humans are rhythmic beings in a rhythmic universe. Most productivity systems ignore this truth — the result is burnout, creative blocks, and the sense that something essential is missing.</p>
+      </div>
+      <div style="flex:1;">
+        <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--mt-gold); margin-bottom:16px;">The Solution</div>
+        <p style="font-family:var(--font-sans); font-size:15px; line-height:1.7; color:var(--mt-clay); margin:0;">Phasecraft translates the Moon's eight phases into actionable guidance for every area of life. Not a vibe — a system. Sound frequencies, breathwork, movement, and intention, synchronized with cosmic rhythms.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Module Journey -->
+  <div style="position:relative; z-index:1; padding:60px 80px 80px; border-top:1px solid hsl(0 0% 10%);">
+    <div style="text-align:center; margin-bottom:48px;">
+      <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--mt-teal); margin-bottom:12px;">8-Week Curriculum</div>
+      <h2 style="font-family:var(--font-display); font-weight:200; font-size:36px; letter-spacing:-0.02em; margin:0;">Your Lunar <span style="font-family:var(--font-editorial); font-style:italic; color:var(--mt-gold);">Journey</span></h2>
+    </div>
+    <div style="max-width:680px; margin:0 auto;">
+      <sc-for list="{{ modules }}" as="m" hint-placeholder-count="6">
+        <div style="display:flex; gap:20px; padding:24px 0; border-bottom:1px solid hsl(0 0% 10%); align-items:flex-start;">
+          <div style="flex:none; display:flex; flex-direction:column; align-items:center; gap:8px; width:44px;">
+            <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.2em; color:var(--mt-muted-fg);">{{ m.num }}</div>
+            <div style="width:32px; height:32px; display:flex; align-items:center; justify-content:center; color:{{ m.color }};"><x-import component-from-global-scope="MoontunerDesignSystem_322301.MoonPhaseGlyph" phase="{{ m.phase }}" size="{{ sz32 }}" hint-size="32px,32px"></x-import></div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--mt-muted-fg); margin-bottom:6px;">{{ m.sub }}</div>
+            <div style="font-family:var(--font-serif); font-size:20px; margin-bottom:6px;">{{ m.title }}</div>
+            <div style="font-family:var(--font-sans); font-size:14px; line-height:1.55; color:var(--mt-clay);">{{ m.desc }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="text-align:center; margin-top:36px; font-family:var(--font-sans); font-size:14px; color:var(--mt-muted-fg);">+ 3 Bonus Modules: Business · Creativity · Relationships</div>
+  </div>
+
+  <!-- Features -->
+  <div style="position:relative; z-index:1; padding:56px 80px; border-top:1px solid hsl(0 0% 10%); background:hsl(0 0% 6%);">
+    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:24px; max-width:1040px; margin:0 auto;">
+      <div style="padding:28px 24px; background:hsl(0 0% 8%); border:1px solid hsl(0 0% 13%); border-radius:16px;">
+        <div style="font-family:var(--font-mono); font-size:28px; color:var(--mt-teal); margin-bottom:16px;">▶</div>
+        <div style="font-family:var(--font-ui); font-weight:500; font-size:13px; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:6px;">Video Lessons</div>
+        <div style="font-family:var(--font-sans); font-size:13px; color:var(--mt-muted-fg);">33 lessons, 20–45 min each</div>
+      </div>
+      <div style="padding:28px 24px; background:hsl(0 0% 8%); border:1px solid hsl(0 0% 13%); border-radius:16px;">
+        <div style="font-family:var(--font-mono); font-size:28px; color:var(--mt-gold); margin-bottom:16px;">▤</div>
+        <div style="font-family:var(--font-ui); font-weight:500; font-size:13px; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:6px;">Workbooks</div>
+        <div style="font-family:var(--font-sans); font-size:13px; color:var(--mt-muted-fg);">Exercises, prompts, journaling</div>
+      </div>
+      <div style="padding:28px 24px; background:hsl(0 0% 8%); border:1px solid hsl(0 0% 13%); border-radius:16px;">
+        <div style="font-family:var(--font-mono); font-size:28px; color:var(--mt-teal); margin-bottom:16px;">♪</div>
+        <div style="font-family:var(--font-ui); font-weight:500; font-size:13px; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:6px;">Audio Guides</div>
+        <div style="font-family:var(--font-sans); font-size:13px; color:var(--mt-muted-fg);">Meditations, breathwork, toning</div>
+      </div>
+      <div style="padding:28px 24px; background:hsl(0 0% 8%); border:1px solid hsl(0 0% 13%); border-radius:16px;">
+        <div style="font-family:var(--font-mono); font-size:28px; color:var(--mt-gold); margin-bottom:16px;">◎</div>
+        <div style="font-family:var(--font-ui); font-weight:500; font-size:13px; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:6px;">Community</div>
+        <div style="font-family:var(--font-sans); font-size:13px; color:var(--mt-muted-fg);">Private forum + moon circles</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing -->
+  <div style="position:relative; z-index:1; padding:80px 80px; border-top:1px solid hsl(0 0% 10%); text-align:center;">
+    <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--mt-teal); margin-bottom:12px;">Investment</div>
+    <h2 style="font-family:var(--font-display); font-weight:200; font-size:36px; letter-spacing:-0.02em; margin:0 0 36px;">Begin Your <span style="font-family:var(--font-editorial); font-style:italic; color:var(--mt-gold);">Transformation</span></h2>
+    <div style="max-width:420px; margin:0 auto; padding:40px; background:hsl(0 0% 7%); border:1px solid var(--mt-teal); border-radius:20px; box-shadow:var(--glow-teal);">
+      <div style="font-family:var(--font-ui); font-weight:500; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--mt-teal); margin-bottom:20px;">Early Bird — First 50 Students</div>
+      <div style="display:flex; align-items:baseline; justify-content:center; gap:12px; margin-bottom:8px;">
+        <span style="font-family:var(--font-display); font-weight:200; font-size:56px; letter-spacing:-0.03em;">$197</span>
+        <span style="font-family:var(--font-sans); font-size:16px; color:var(--mt-muted-fg); text-decoration:line-through;">$297</span>
+      </div>
+      <div style="font-family:var(--font-sans); font-size:14px; color:var(--mt-clay); margin-bottom:28px;">One-time payment · Lifetime access · All future updates</div>
+      <x-import component-from-global-scope="MoontunerDesignSystem_322301.Button" fullWidth="{{ true }}" hint-size="100%,48px">Enroll Now</x-import>
+      <div style="font-family:var(--font-sans); font-size:12px; color:var(--mt-muted-fg); margin-top:14px;">Payment plans available at checkout</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="position:relative; z-index:1; padding:48px 80px; border-top:1px solid hsl(0 0% 10%); text-align:center;">
+    <p style="font-family:var(--font-editorial); font-style:italic; font-size:20px; color:var(--mt-gold); margin:0 0 8px;">The moon has guided humanity for millions of years.</p>
+    <p style="font-family:var(--font-sans); font-size:15px; color:var(--mt-clay); margin:0;">Now it can guide you.</p>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- ═══════════════ 1b: EPHEMERIS LANDING ═══════════════ -->
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Ephemeris — editorial, paper/riso palette</div>
+<div class="dv-card" style="width:1200px">
+<div style="background:var(--riso-paper); color:var(--riso-ink); position:relative; overflow:hidden;">
+
+  <!-- Nav -->
+  <nav style="display:flex; justify-content:space-between; align-items:center; padding:20px 48px; border-bottom:1px solid rgba(28,26,23,0.1);">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="color:var(--riso-ink); display:inline-block; width:20px; height:20px;"><x-import component-from-global-scope="MoontunerDesignSystem_322301.MoonPhaseGlyph" phase="waxing-crescent" size="{{ sz20 }}" hint-size="20px,20px"></x-import></span>
+      <span style="font-family:var(--font-ui); font-weight:600; font-size:12px; letter-spacing:0.16em; text-transform:uppercase;">School of Phasecraft</span>
+    </div>
+    <div style="display:flex; gap:28px; align-items:center;">
+      <span style="font-family:var(--font-ui); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:rgba(28,26,23,0.45); cursor:pointer;">Curriculum</span>
+      <span style="font-family:var(--font-ui); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:rgba(28,26,23,0.45); cursor:pointer;">Method</span>
+      <span style="font-family:var(--font-ui); font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:rgba(28,26,23,0.45); cursor:pointer;">Community</span>
+      <div style="display:inline-flex; align-items:center; justify-content:center; padding:0.5rem 1rem; font-family:var(--font-ui); font-weight:500; font-size:0.6875rem; letter-spacing:0.06em; text-transform:uppercase; border-radius:9999px; border:1px solid var(--riso-ink); color:var(--riso-ink); cursor:pointer;">Enroll</div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div style="padding:80px 80px 56px; max-width:900px;">
+    <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--riso-teal); margin-bottom:20px;">Lunar Phasecraft Mastery · The Complete Moontuner Method</div>
+    <h1 style="font-family:var(--font-serif); font-weight:400; font-size:56px; line-height:1.08; letter-spacing:-0.01em; margin:0;">The School of<br><span style="font-family:var(--font-editorial); font-style:italic; color:var(--riso-blue);">Phasecraft</span></h1>
+    <p style="font-family:var(--font-sans); font-size:17px; line-height:1.7; color:rgba(28,26,23,0.6); max-width:520px; margin:24px 0 0;">Transform your relationship with time and energy through the Moon's sacred rhythms. A comprehensive self-paced course from Michael Moon Anticoli.</p>
+    <div style="display:flex; gap:14px; margin-top:32px;">
+      <div style="display:inline-flex; align-items:center; justify-content:center; padding:0.85rem 1.6rem; font-family:var(--font-ui); font-weight:500; font-size:0.8125rem; letter-spacing:0.06em; text-transform:uppercase; border-radius:9999px; background:var(--riso-ink); color:var(--riso-paper); cursor:pointer;">Enroll — $197</div>
+      <div style="display:inline-flex; align-items:center; justify-content:center; padding:0.85rem 1.6rem; font-family:var(--font-ui); font-weight:500; font-size:0.8125rem; letter-spacing:0.06em; text-transform:uppercase; border-radius:9999px; border:1px solid rgba(28,26,23,0.25); color:var(--riso-ink); cursor:pointer;">Preview Curriculum</div>
+    </div>
+  </div>
+
+  <!-- Phase color bar -->
+  <div style="display:flex; height:4px; margin:0 80px;">
+    <div style="flex:1; background:var(--riso-red);"></div>
+    <div style="flex:1; background:var(--riso-orange);"></div>
+    <div style="flex:1; background:var(--riso-gold);"></div>
+    <div style="flex:1; background:var(--riso-teal);"></div>
+    <div style="flex:1; background:var(--riso-blue);"></div>
+    <div style="flex:1; background:var(--riso-magenta);"></div>
+    <div style="flex:1; background:var(--riso-violet);"></div>
+    <div style="flex:1; background:var(--riso-olive);"></div>
+  </div>
+
+  <!-- Problem / Solution -->
+  <div style="padding:56px 80px; display:flex; gap:48px;">
+    <div style="flex:1;">
+      <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--riso-teal); margin-bottom:14px;">The Problem</div>
+      <p style="font-family:var(--font-sans); font-size:15px; line-height:1.7; color:rgba(28,26,23,0.6); margin:0;">Humans are rhythmic beings living in a rhythmic universe, yet most productivity systems treat energy as linear. The result is burnout, creative blocks, and disconnection.</p>
+    </div>
+    <div style="flex:1;">
+      <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--riso-blue); margin-bottom:14px;">The Method</div>
+      <p style="font-family:var(--font-sans); font-size:15px; line-height:1.7; color:rgba(28,26,23,0.6); margin:0;">Phasecraft maps the Moon's eight phases to actionable daily practices — sound, breath, movement, and intention. Not fortune-telling. Frequency-tuning.</p>
+    </div>
+  </div>
+
+  <!-- Module Grid -->
+  <div style="padding:20px 80px 60px;">
+    <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:rgba(28,26,23,0.35); margin-bottom:24px;">Curriculum · 6 Modules · 8 Weeks</div>
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
+      <sc-for list="{{ modules }}" as="m" hint-placeholder-count="6">
+        <div style="padding:24px; border:1px solid rgba(28,26,23,0.1); border-radius:12px; border-left:3px solid {{ m.color }}; background:rgba(255,255,255,0.4);">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+            <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.2em; color:rgba(28,26,23,0.35);">{{ m.sub }}</span>
+            <span style="color:{{ m.color }}; display:inline-block; width:24px; height:24px;"><x-import component-from-global-scope="MoontunerDesignSystem_322301.MoonPhaseGlyph" phase="{{ m.phase }}" size="{{ sz24 }}" hint-size="24px,24px"></x-import></span>
+          </div>
+          <div style="font-family:var(--font-serif); font-size:18px; margin-bottom:6px;">{{ m.title }}</div>
+          <div style="font-family:var(--font-sans); font-size:13px; line-height:1.5; color:rgba(28,26,23,0.5);">{{ m.desc }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="font-family:var(--font-sans); font-size:13px; color:rgba(28,26,23,0.35); margin-top:16px;">+ 3 Bonus Modules: Lunar Business · Creativity & Art · Relationships & Communication</div>
+  </div>
+
+  <!-- What's Included -->
+  <div style="padding:40px 80px; border-top:1px solid rgba(28,26,23,0.08);">
+    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:32px;">
+      <div>
+        <div style="font-family:var(--font-mono); font-size:24px; color:var(--riso-teal); margin-bottom:10px;">33</div>
+        <div style="font-family:var(--font-ui); font-weight:500; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:4px;">Video Lessons</div>
+        <div style="font-family:var(--font-sans); font-size:12px; color:rgba(28,26,23,0.45);">20–45 minutes each</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono); font-size:24px; color:var(--riso-orange); margin-bottom:10px;">6</div>
+        <div style="font-family:var(--font-ui); font-weight:500; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:4px;">Workbooks</div>
+        <div style="font-family:var(--font-sans); font-size:12px; color:rgba(28,26,23,0.45);">Exercises + journaling</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono); font-size:24px; color:var(--riso-blue); margin-bottom:10px;">∞</div>
+        <div style="font-family:var(--font-ui); font-weight:500; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:4px;">Audio Guides</div>
+        <div style="font-family:var(--font-sans); font-size:12px; color:rgba(28,26,23,0.45);">Meditations + breathwork</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-mono); font-size:24px; color:var(--riso-magenta); margin-bottom:10px;">◎</div>
+        <div style="font-family:var(--font-ui); font-weight:500; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:4px;">Community</div>
+        <div style="font-family:var(--font-sans); font-size:12px; color:rgba(28,26,23,0.45);">Forum + moon circles</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing -->
+  <div style="padding:48px 80px 56px; border-top:1px solid rgba(28,26,23,0.08);">
+    <div style="display:flex; gap:48px; align-items:center;">
+      <div style="flex:1;">
+        <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--riso-teal); margin-bottom:12px;">Enrollment</div>
+        <div style="font-family:var(--font-serif); font-size:36px; margin-bottom:8px;">$197 <span style="font-family:var(--font-sans); font-size:16px; color:rgba(28,26,23,0.35); text-decoration:line-through;">$297</span></div>
+        <div style="font-family:var(--font-sans); font-size:14px; color:rgba(28,26,23,0.5);">Early bird · First 50 students · Lifetime access · All future updates</div>
+      </div>
+      <div style="display:inline-flex; align-items:center; justify-content:center; padding:1rem 2.25rem; font-family:var(--font-ui); font-weight:500; font-size:0.875rem; letter-spacing:0.06em; text-transform:uppercase; border-radius:9999px; background:var(--riso-ink); color:var(--riso-paper); cursor:pointer;">Enroll Now</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="padding:32px 80px; border-top:1px solid rgba(28,26,23,0.08); text-align:center;">
+    <p style="font-family:var(--font-editorial); font-style:italic; font-size:18px; color:var(--riso-blue); margin:0;">Astrology with agency. Less woo, more you.</p>
+  </div>
+
+</div>
+</div>
+</div>
+
+<!-- ═══════════════ 1c: STUDENT DASHBOARD ═══════════════ -->
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Student dashboard — logged-in learning home</div>
+<div class="dv-card" style="width:1200px">
+<div class="theme-core" style="background:var(--mt-night); color:var(--mt-ivory); min-height:800px;">
+
+  <!-- Top nav -->
+  <nav style="display:flex; justify-content:space-between; align-items:center; padding:14px 32px; background:hsl(0 0% 5%); border-bottom:1px solid hsl(0 0% 12%);">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="color:var(--mt-teal); display:inline-block; width:18px; height:18px;"><x-import component-from-global-scope="MoontunerDesignSystem_322301.MoonPhaseGlyph" phase="waxing-crescent" size="{{ sz20 }}" hint-size="18px,18px"></x-import></span>
+      <span style="font-family:var(--font-ui); font-weight:600; font-size:11px; letter-spacing:0.14em; text-transform:uppercase;">Phasecraft</span>
+    </div>
+    <div style="display:flex; gap:24px; align-items:center;">
+      <span style="font-family:var(--font-ui); font-size:11px; letter-spacing:0.04em; text-transform:uppercase; color:var(--mt-teal); padding:6px 0; border-bottom:2px solid var(--mt-teal);">Dashboard</span>
+      <span style="font-family:var(--font-ui); font-size:11px; letter-spacing:0.04em; text-transform:uppercase; color:var(--mt-muted-fg); cursor:pointer;">Modules</span>
+      <span style="font-family:var(--font-ui); font-size:11px; letter-spacing:0.04em; text-transform:uppercase; color:var(--mt-muted-fg); cursor:pointer;">Practice</span>
+      <span style="font-family:var(--font-ui); font-size:11px; letter-spacing:0.04em; text-transform:uppercase; color:var(--mt-muted-fg); cursor:pointer;">Workbook</span>
+      <span style="font-family:var(--font-ui); font-size:11px; letter-spacing:0.04em; text-transform:uppercase; color:var(--mt-muted-fg); cursor:pointer;">Community</span>
+    </div>
+    <div style="width:32px; height:32px; border-radius:50%; background:hsl(0 0% 15%); border:1px solid hsl(0 0% 20%); display:flex; align-items:center; justify-content:center;">
+      <span style="font-family:var(--font-ui); font-size:11px;">M</span>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <div style="padding:32px; display:grid; grid-template-columns:1fr 340px; gap:24px;">
+
+    <!-- Left column -->
+    <div style="display:flex; flex-direction:column; gap:20px;">
+
+      <!-- Welcome + Phase -->
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--mt-muted-fg);">Fri · Aug 15 · 2026</div>
+          <h1 style="font-family:var(--font-display); font-weight:200; font-size:28px; letter-spacing:-0.02em; margin:8px 0 0;">Welcome back, <span style="font-family:var(--font-editorial); font-style:italic; color:var(--mt-gold);">Michael</span></h1>
+        </div>
+        <x-import component-from-global-scope="MoontunerDesignSystem_322301.LivePill" hint-size="auto,28px">Waxing Gibbous in Sagittarius</x-import>
+      </div>
+
+      <!-- Overall Progress -->
+      <div style="padding:24px; background:hsl(0 0% 7%); border:1px solid hsl(0 0% 13%); border-radius:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:16px;">
+          <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--mt-muted-fg);">Course Progress</span>
+          <span style="font-family:var(--font-mono); font-size:12px; color:var(--mt-teal);">38%</span>
+        </div>
+        <div style="height:4px; background:hsl(0 0% 12%); border-radius:2px; margin-bottom:20px;">
+          <div style="height:100%; width:38%; background:var(--mt-teal); border-radius:2px;"></div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <sc-for list="{{ modules }}" as="m" hint-placeholder-count="6">
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;">
+              <div style="width:100%; height:3px; background:{{ m.color }}; border-radius:2px; opacity:0.35;"></div>
+              <span style="font-family:var(--font-mono); font-size:9px; letter-spacing:0.1em; color:var(--mt-muted-fg);">{{ m.num }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- Current Module -->
+      <div style="padding:28px; background:hsl(0 0% 7%); border:1px solid hsl(0 0% 13%); border-left:2px solid #e8792b; border-radius:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
+          <div>
+            <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--mt-muted-fg); margin-bottom:6px;">Currently Studying</div>
+            <div style="font-family:var(--font-serif); font-size:20px;">Module 2: The Waxing Journey</div>
+          </div>
+          <x-import component-from-global-scope="MoontunerDesignSystem_322301.Badge" hint-size="auto,24px">Week 2</x-import>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <!-- Completed -->
+          <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:hsl(0 0% 9%); border-radius:8px;">
+            <div style="width:18px; height:18px; border-radius:50%; background:var(--mt-teal); display:flex; align-items:center; justify-content:center; flex:none;"><span style="font-size:10px; color:var(--mt-night);">✓</span></div>
+            <span style="font-family:var(--font-sans); font-size:14px; color:var(--mt-clay);">2.1 New Moon — The Quantum Zero-Point</span>
+            <span style="margin-left:auto; font-family:var(--font-mono); font-size:10px; color:var(--mt-muted-fg);">45m</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:hsl(0 0% 9%); border-radius:8px;">
+            <div style="width:18px; height:18px; border-radius:50%; background:var(--mt-teal); display:flex; align-items:center; justify-content:center; flex:none;"><span style="font-size:10px; color:var(--mt-night);">✓</span></div>
+            <span style="font-family:var(--font-sans); font-size:14px; color:var(--mt-clay);">2.2 Waxing Crescent — Building Momentum</span>
+            <span style="margin-left:auto; font-family:var(--font-mono); font-size:10px; color:var(--mt-muted-fg);">35m</span>
+          </div>
+          <!-- In progress -->
+          <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:hsl(168 75% 45% / 0.06); border:1px solid hsl(168 75% 45% / 0.15); border-radius:8px;">
+            <div style="width:18px; height:18px; border-radius:50%; border:2px solid var(--mt-teal); display:flex; align-items:center; justify-content:center; flex:none;"><div style="width:6px; height:6px; border-radius:50%; background:var(--mt-teal);"></div></div>
+            <span style="font-family:var(--font-sans); font-size:14px;">2.3 First Quarter — Taking Decisive Action</span>
+            <span style="margin-left:auto; font-family:var(--font-mono); font-size:10px; color:var(--mt-teal);">In progress</span>
+          </div>
+          <!-- Locked -->
+          <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:hsl(0 0% 9%); border-radius:8px; opacity:0.45;">
+            <div style="width:18px; height:18px; border-radius:50%; border:1px solid hsl(0 0% 20%); flex:none;"></div>
+            <span style="font-family:var(--font-sans); font-size:14px; color:var(--mt-clay);">2.4 Waxing Gibbous — Refining and Perfecting</span>
+            <span style="margin-left:auto; font-family:var(--font-mono); font-size:10px; color:var(--mt-muted-fg);">40m</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; background:hsl(0 0% 9%); border-radius:8px; opacity:0.45;">
+            <div style="width:18px; height:18px; border-radius:50%; border:1px solid hsl(0 0% 20%); flex:none;"></div>
+            <span style="font-family:var(--font-sans); font-size:14px; color:var(--mt-clay);">2.5 Full Moon — Culmination and Expression</span>
+            <span style="margin-left:auto; font-family:var(--font-mono); font-size:10px; color:var(--mt-muted-fg);">30m</span>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <x-import component-from-global-scope="MoontunerDesignSystem_322301.Button" size="sm" hint-size="auto,38px">Continue Lesson</x-import>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div style="display:flex; flex-direction:column; gap:20px;">
+
+      <!-- Daily Directive -->
+      <div style="padding:24px; background:linear-gradient(180deg, hsl(0 0% 8%) 0%, hsl(0 0% 5%) 100%); border:1px solid hsl(0 0% 13%); border-left:2px solid var(--mt-teal); border-radius:16px;">
+        <div style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.24em; text-transform:uppercase; color:var(--mt-teal); margin-bottom:14px;">Today's Directive · Refinement</div>
+        <p style="font-family:var(--font-editorial); font-style:italic; font-size:18px; line-height:1.4; margin:0 0 16px;">Refine, don't restart. Polish the work you've already begun.</p>
+        <div style="display:flex; gap:8px;">
+          <x-import component-from-global-scope="MoontunerDesignSystem_322301.Button" variant="outline" size="sm" hint-size="auto,34px">Log Alignment</x-import>
+          <x-import component-from-global-scope="MoontunerDesignSystem_322301.Button" variant="ghost" size="sm" hint-size="auto,34px">Breathwork</x-import>
+        </div>
+      </div>
+
+      <!-- Cycle strip -->
+      <div style="padding:20px; background:hsl(0 0% 7%); border:1px solid hsl(0 0% 13%); border-radius:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:14px;">
+          <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--mt-muted-fg);">Current Cycle</span>
+          <span style="font-family:var(--font-mono); font-size:10px; color:var(--mt-teal);">Day 11 of 29</span>
+        </div>
+        <x-import component-from-global-scope="MoontunerDesignSystem_322301.PhaseStrip" active="waxing-gibbous" hint-size="100%,60px"></x-import>
+      </div>
+
+      <!-- Workbook -->
+      <div style="padding:20px; background:hsl(0 0% 7%); border:1px solid hsl(0 0% 13%); border-radius:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:14px;">
+          <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--mt-muted-fg);">Workbook</span>
+          <span style="font-family:var(--font-mono); font-size:10px; color:var(--mt-gold);">4 / 14 complete</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:hsl(0 0% 9%); border-radius:8px;">
+            <div style="width:14px; height:14px; border-radius:50%; background:var(--mt-teal); flex:none;"></div>
+            <span style="font-family:var(--font-sans); font-size:13px; color:var(--mt-clay);">Ex 2.3: Intention Ceremony</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:hsl(42 50% 58% / 0.06); border:1px solid hsl(42 50% 58% / 0.12); border-radius:8px;">
+            <div style="width:14px; height:14px; border-radius:3px; border:1.5px solid var(--mt-gold); flex:none;"></div>
+            <span style="font-family:var(--font-sans); font-size:13px;">Ex 2.5: Research Project</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Community -->
+      <div style="padding:20px; background:hsl(0 0% 7%); border:1px solid hsl(0 0% 13%); border-radius:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:14px;">
+          <span style="font-family:var(--font-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--mt-muted-fg);">Community</span>
+          <span style="font-family:var(--font-mono); font-size:10px; color:var(--mt-teal);">3 new</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="padding:10px 12px; background:hsl(0 0% 9%); border-radius:8px;">
+            <div style="font-family:var(--font-sans); font-size:12px; margin-bottom:3px;">Full Moon Release Ceremony Share</div>
+            <div style="font-family:var(--font-sans); font-size:11px; color:var(--mt-muted-fg);">Sarah K. · 2h ago · 12 replies</div>
+          </div>
+          <div style="padding:10px 12px; background:hsl(0 0% 9%); border-radius:8px;">
+            <div style="font-family:var(--font-sans); font-size:12px; margin-bottom:3px;">Scorpio moon energy this week</div>
+            <div style="font-family:var(--font-sans); font-size:11px; color:var(--mt-muted-fg);">David R. · 5h ago · 8 replies</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try: "expand <a class="dv-oid" href="#1a">1a</a> with a lesson view" · "make <a class="dv-oid" href="#1b">1b</a> dark instead" · "show the enrollment flow for <a class="dv-oid" href="#1c">1c</a>" · "build all screens in one direction"</p>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+
+class Component extends DCLogic {
+  renderVals() {
+    const modules = [
+      { num: '01', title: 'Foundations of Lunar Living', sub: 'Week 1 · 4 Lessons', phase: 'new', color: '#e5432c', desc: 'The Moontuner philosophy, resonance science, and sacred space preparation.' },
+      { num: '02', title: 'The Waxing Journey', sub: 'Weeks 2–3 · 5 Lessons', phase: 'waxing-crescent', color: '#e8792b', desc: 'New Moon through Full Moon — intention, momentum, action, and refinement.' },
+      { num: '03', title: 'Moon Signs & Daily Alignment', sub: 'Week 4 · 7 Lessons', phase: 'waxing-gibbous', color: '#1f9aa6', desc: 'Zodiac sign energy, void-of-course navigation, and daily planning.' },
+      { num: '04', title: 'The Waning Wisdom', sub: 'Weeks 5–6 · 5 Lessons', phase: 'waning-gibbous', color: '#c0397f', desc: 'Full Moon expression, release rituals, deep rest, and cycle renewal.' },
+      { num: '05', title: 'Advanced Frequency', sub: 'Week 7 · 6 Lessons', phase: 'last-quarter', color: '#7a4ea3', desc: 'Tuning forks, singing bowls, ceremony design, and movement practice.' },
+      { num: '06', title: 'Integration & Mastery', sub: 'Week 8 · 6 Lessons', phase: 'full', color: '#2b4c8c', desc: 'Personal frequency map, sustainable practice, and teaching foundations.' }
+    ];
+    return { modules, sz80: 80, sz48: 48, sz40: 40, sz32: 32, sz24: 24, sz22: 22, sz20: 20, sz16: 16 };
+  }
+}
+
+</script>
+</body>
+</html>
